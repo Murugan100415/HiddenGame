@@ -22,7 +22,7 @@ const ORIGINAL_HEIGHT = 900; // Estimated height, adjust if you know the exact v
 
 const centerHotspots = [
   // Format: { name, x_percent, y_percent, w_percent, h_percent }
-  { name: "slice of pizza", cx: 536 / ORIGINAL_WIDTH, cy: 900 / ORIGINAL_HEIGHT, w: 120 / ORIGINAL_WIDTH, h: 45 / ORIGINAL_HEIGHT },
+  { name: "slice of pizza", cx: 536 / ORIGINAL_WIDTH, cy: 800 / ORIGINAL_HEIGHT, w: 120 / ORIGINAL_WIDTH, h: 45 / ORIGINAL_HEIGHT },
   { name: "radish", cx: 91 / ORIGINAL_WIDTH, cy: 302 / ORIGINAL_HEIGHT, w: 45 / ORIGINAL_WIDTH, h: 62 / ORIGINAL_HEIGHT },
   { name: "mitten", cx: 200 / ORIGINAL_WIDTH, cy: 775 / ORIGINAL_HEIGHT, w: 108 / ORIGINAL_WIDTH, h: 96 / ORIGINAL_HEIGHT },
   { name: "musical note", cx: 241 / ORIGINAL_WIDTH, cy: 439 / ORIGINAL_HEIGHT, w: 60 / ORIGINAL_WIDTH, h: 65 / ORIGINAL_HEIGHT },
@@ -323,6 +323,7 @@ if (startButton) {
 } else {
   window.onload = startGame;
 }
+
 
 
 

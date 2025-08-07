@@ -185,13 +185,13 @@ function revealColoredIcon(obj, hotspotEl) {
   const imagePath = `Temp/Ans/${iconFile}C.png`;
   const img = document.createElement('img');
 
-  // Error handling
-  img.onerror = function() {
+  // Handle load error
+  img.onerror = function () {
     console.error("❌ IMAGE FAILED TO LOAD:", imagePath);
   };
 
   img.src = imagePath;
-  img.classList.add('answer-icon', 'reveal'); // Add 'reveal' immediately
+  img.classList.add('answer-icon');
   img.style.width = obj.w + 'px';
   img.style.height = obj.h + 'px';
   img.style.top = obj.y + 'px';
@@ -201,9 +201,16 @@ function revealColoredIcon(obj, hotspotEl) {
   const imageContainer = document.querySelector('.left-panel');
   imageContainer.appendChild(img);
 
-  console.log("✅ Added the icon with 'reveal' class:", imagePath);
+  console.log("✅ Added blurred hidden icon:", imagePath);
 
-  // Trigger visual effect immediately
+  // 🧠 Force layout so browser applies initial blur state before reveal
+  void img.offsetWidth; // Trigger reflow (this ensures the animation works)
+
+  // 🌟 Add .reveal to trigger animation instantly
+  img.classList.add('reveal');
+  console.log("🎉 Reveal animation triggered.");
+
+  // 🎆 Launch magic visual effect at center of icon
   launchMagicEffect(obj.x + obj.w / 2, obj.y + obj.h / 2);
 }
 
@@ -224,3 +231,4 @@ function launchMagicEffect(x, y) {
   });
 
 }
+

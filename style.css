@@ -197,6 +197,21 @@ body {
   .right-panel {
     /* Allow the icon list to take up the full width */
     width: auto;
+    
+    /* NEW: Set a maximum height for the panel */
+    max-height: 180px; 
+    
+    /* NEW: Add a scrollbar if the content overflows */
+    overflow-y: scroll; 
+    
+    /* Optional: Slightly reduce padding for a better fit */
+    padding: 10px;
+  }
+  
+  /* NEW: Add this new rule to make the icons smaller */
+  .draggable-icon {
+    width: 45px;
+    height: 45px;
   }
 
   .header-title {
@@ -207,6 +222,7 @@ body {
     max-width: 150px;
   }
 }
+
 
 
 

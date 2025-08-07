@@ -17,28 +17,32 @@ const iconMap = {
   "crown": "Crown"
 };
 
+const ORIGINAL_WIDTH = 725;
+const ORIGINAL_HEIGHT = 900; // Estimated height, adjust if you know the exact value
+
 const centerHotspots = [
-  { name: "slice of pizza", cx: 536, cy: 769, w: 120, h: 45 },
-  { name: "radish", cx: 91, cy: 302, w: 45, h: 62 },
-  { name: "mitten", cx: 200, cy: 775, w: 108, h: 96 },
-  { name: "musical note", cx: 241, cy: 439, w: 60, h: 65 },
-  { name: "slice of bread", cx: 562, cy: 692, w: 67, h: 59 },
-  { name: "ice-cream cone", cx: 94, cy: 677, w: 74, h: 122 },
-  { name: "flag", cx: 600, cy: 258, w: 100, h: 262 },
-  { name: "doughnut", cx: 284, cy: 559, w: 61, h: 46 },
-  { name: "cracker", cx: 117, cy: 143, w: 45, h: 45 },
-  { name: "book", cx: 59, cy: 448, w: 79, h: 40 },
-  { name: "watermelon", cx: 463, cy: 435, w: 67, h: 77 },
-  { name: "butterfly", cx: 458, cy: 163, w: 80, h: 57 },
-  { name: "snake", cx: 595, cy: 575, w: 40, h: 160 },
-  { name: "ring", cx: 359, cy: 40, w: 38, h: 57 },
-  { name: "paintbrush", cx: 298, cy: 718, w: 60, h: 84 }
+  // Format: { name, x_percent, y_percent, w_percent, h_percent }
+  { name: "slice of pizza", cx: 536 / ORIGINAL_WIDTH, cy: 769 / ORIGINAL_HEIGHT, w: 120 / ORIGINAL_WIDTH, h: 45 / ORIGINAL_HEIGHT },
+  { name: "radish", cx: 91 / ORIGINAL_WIDTH, cy: 302 / ORIGINAL_HEIGHT, w: 45 / ORIGINAL_WIDTH, h: 62 / ORIGINAL_HEIGHT },
+  { name: "mitten", cx: 200 / ORIGINAL_WIDTH, cy: 775 / ORIGINAL_HEIGHT, w: 108 / ORIGINAL_WIDTH, h: 96 / ORIGINAL_HEIGHT },
+  { name: "musical note", cx: 241 / ORIGINAL_WIDTH, cy: 439 / ORIGINAL_HEIGHT, w: 60 / ORIGINAL_WIDTH, h: 65 / ORIGINAL_HEIGHT },
+  { name: "slice of bread", cx: 562 / ORIGINAL_WIDTH, cy: 692 / ORIGINAL_HEIGHT, w: 67 / ORIGINAL_WIDTH, h: 59 / ORIGINAL_HEIGHT },
+  { name: "ice-cream cone", cx: 94 / ORIGINAL_WIDTH, cy: 677 / ORIGINAL_HEIGHT, w: 74 / ORIGINAL_WIDTH, h: 122 / ORIGINAL_HEIGHT },
+  { name: "flag", cx: 600 / ORIGINAL_WIDTH, cy: 258 / ORIGINAL_HEIGHT, w: 100 / ORIGINAL_WIDTH, h: 262 / ORIGINAL_HEIGHT },
+  { name: "doughnut", cx: 284 / ORIGINAL_WIDTH, cy: 559 / ORIGINAL_HEIGHT, w: 61 / ORIGINAL_WIDTH, h: 46 / ORIGINAL_HEIGHT },
+  { name: "cracker", cx: 117 / ORIGINAL_WIDTH, cy: 143 / ORIGINAL_HEIGHT, w: 45 / ORIGINAL_WIDTH, h: 45 / ORIGINAL_HEIGHT },
+  { name: "book", cx: 59 / ORIGINAL_WIDTH, cy: 448 / ORIGINAL_HEIGHT, w: 79 / ORIGINAL_WIDTH, h: 40 / ORIGINAL_HEIGHT },
+  { name: "watermelon", cx: 463 / ORIGINAL_WIDTH, cy: 435 / ORIGINAL_HEIGHT, w: 67 / ORIGINAL_WIDTH, h: 77 / ORIGINAL_HEIGHT },
+  { name: "butterfly", cx: 458 / ORIGINAL_WIDTH, cy: 163 / ORIGINAL_HEIGHT, w: 80 / ORIGINAL_WIDTH, h: 57 / ORIGINAL_HEIGHT },
+  { name: "snake", cx: 595 / ORIGINAL_WIDTH, cy: 575 / ORIGINAL_HEIGHT, w: 40 / ORIGINAL_WIDTH, h: 160 / ORIGINAL_HEIGHT },
+  { name: "ring", cx: 359 / ORIGINAL_WIDTH, cy: 40 / ORIGINAL_HEIGHT, w: 38 / ORIGINAL_WIDTH, h: 57 / ORIGINAL_HEIGHT },
+  { name: "paintbrush", cx: 298 / ORIGINAL_WIDTH, cy: 718 / ORIGINAL_HEIGHT, w: 60 / ORIGINAL_WIDTH, h: 84 / ORIGINAL_HEIGHT }
 ];
 
 const objectsToFind = centerHotspots.map(obj => ({
   name: obj.name,
-  x: obj.cx - obj.w / 2,
-  y: obj.cy - obj.h / 2,
+  x: obj.cx - (obj.w / 2),
+  y: obj.cy - (obj.h / 2),
   w: obj.w,
   h: obj.h
 }));
@@ -50,15 +54,22 @@ let timer;
 function startGame() {
   const list = document.getElementById('object-list');
   const imageContainer = document.querySelector('.left-panel');
+  const puzzleImage = document.getElementById('puzzle-image');
 
-  // Create Hotspots
+  // Get the current, scaled dimensions of the puzzle image
+  const rect = puzzleImage.getBoundingClientRect();
+  const currentWidth = rect.width;
+  const currentHeight = rect.height;
+
+  // Create Hotspots using percentage calculations
   objectsToFind.forEach(obj => {
     const hotspot = document.createElement('div');
     hotspot.classList.add('hotspot');
-    hotspot.style.top = `${obj.y}px`;
-    hotspot.style.left = `${obj.x}px`;
-    hotspot.style.width = `${obj.w}px`;
-    hotspot.style.height = `${obj.h}px`;
+    // Calculate pixel position from percentage
+    hotspot.style.top = `${obj.y * currentHeight}px`;
+    hotspot.style.left = `${obj.x * currentWidth}px`;
+    hotspot.style.width = `${obj.w * currentWidth}px`;
+    hotspot.style.height = `${obj.h * currentHeight}px`;
     hotspot.dataset.name = obj.name;
     imageContainer.appendChild(hotspot);
   });

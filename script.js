@@ -181,39 +181,30 @@ function launchConfetti() {
 }
 
 function revealColoredIcon(obj, hotspotEl) {
-  console.log("--- Starting to reveal colored icon ---"); // Debug message 1
-
   const iconFile = iconMap[obj.name] || obj.name;
   const imagePath = `Temp/Ans/${iconFile}C.png`;
-
-  console.log("Attempting to load image from path:", imagePath); // Debug message 2
-
   const img = document.createElement('img');
-  
-  // This is a special event handler that will trigger if the image path is wrong
+
+  // Error handling
   img.onerror = function() {
-      console.error("IMAGE FAILED TO LOAD. The browser could not find the file at the path above. Please double-check the file name and folder structure.");
+    console.error("❌ IMAGE FAILED TO LOAD:", imagePath);
   };
 
   img.src = imagePath;
-  img.classList.add('answer-icon');
+  img.classList.add('answer-icon', 'reveal'); // Add 'reveal' immediately
   img.style.width = obj.w + 'px';
   img.style.height = obj.h + 'px';
   img.style.top = obj.y + 'px';
   img.style.left = obj.x + 'px';
   img.style.position = 'absolute';
-  img.style.opacity = 0;
 
   const imageContainer = document.querySelector('.left-panel');
   imageContainer.appendChild(img);
-  
-  console.log("Successfully added the invisible icon to the page."); // Debug message 3
 
-  setTimeout(() => {
-    img.classList.add('reveal');
-    console.log("Added the '.reveal' class to make the icon visible."); // Debug message 4
-	launchMagicEffect(obj.x + obj.w / 2, obj.y + obj.h / 2);
-  }, 50);
+  console.log("✅ Added the icon with 'reveal' class:", imagePath);
+
+  // Trigger visual effect immediately
+  launchMagicEffect(obj.x + obj.w / 2, obj.y + obj.h / 2);
 }
 
 function launchMagicEffect(x, y) {
@@ -231,4 +222,5 @@ function launchMagicEffect(x, y) {
     shapes: ['star'], // Use star shapes instead of squares
     colors: ['#ffd700', '#ffeca0', '#ffffff', '#fff4a3'] // Gold, yellow, and white colors
   });
+
 }

@@ -22,21 +22,21 @@ const ORIGINAL_HEIGHT = 900; // Estimated height, adjust if you know the exact v
 
 const centerHotspots = [
   // Format: { name, x_percent, y_percent, w_percent, h_percent }
-  { name: "slice of pizza", cx: 536 / ORIGINAL_WIDTH, cy: 600 / ORIGINAL_HEIGHT, w: 120 / ORIGINAL_WIDTH, h: 45 / ORIGINAL_HEIGHT },
-  { name: "radish", cx: 91 / ORIGINAL_WIDTH, cy: 302 / ORIGINAL_HEIGHT, w: 45 / ORIGINAL_WIDTH, h: 62 / ORIGINAL_HEIGHT },
-  { name: "mitten", cx: 200 / ORIGINAL_WIDTH, cy: 775 / ORIGINAL_HEIGHT, w: 108 / ORIGINAL_WIDTH, h: 96 / ORIGINAL_HEIGHT },
-  { name: "musical note", cx: 241 / ORIGINAL_WIDTH, cy: 439 / ORIGINAL_HEIGHT, w: 60 / ORIGINAL_WIDTH, h: 65 / ORIGINAL_HEIGHT },
-  { name: "slice of bread", cx: 562 / ORIGINAL_WIDTH, cy: 692 / ORIGINAL_HEIGHT, w: 67 / ORIGINAL_WIDTH, h: 59 / ORIGINAL_HEIGHT },
-  { name: "ice-cream cone", cx: 94 / ORIGINAL_WIDTH, cy: 677 / ORIGINAL_HEIGHT, w: 74 / ORIGINAL_WIDTH, h: 122 / ORIGINAL_HEIGHT },
-  { name: "flag", cx: 600 / ORIGINAL_WIDTH, cy: 258 / ORIGINAL_HEIGHT, w: 100 / ORIGINAL_WIDTH, h: 262 / ORIGINAL_HEIGHT },
-  { name: "doughnut", cx: 284 / ORIGINAL_WIDTH, cy: 559 / ORIGINAL_HEIGHT, w: 61 / ORIGINAL_WIDTH, h: 46 / ORIGINAL_HEIGHT },
-  { name: "cracker", cx: 117 / ORIGINAL_WIDTH, cy: 143 / ORIGINAL_HEIGHT, w: 45 / ORIGINAL_WIDTH, h: 45 / ORIGINAL_HEIGHT },
-  { name: "book", cx: 59 / ORIGINAL_WIDTH, cy: 448 / ORIGINAL_HEIGHT, w: 79 / ORIGINAL_WIDTH, h: 40 / ORIGINAL_HEIGHT },
-  { name: "watermelon", cx: 463 / ORIGINAL_WIDTH, cy: 435 / ORIGINAL_HEIGHT, w: 67 / ORIGINAL_WIDTH, h: 77 / ORIGINAL_HEIGHT },
-  { name: "butterfly", cx: 458 / ORIGINAL_WIDTH, cy: 163 / ORIGINAL_HEIGHT, w: 80 / ORIGINAL_WIDTH, h: 57 / ORIGINAL_HEIGHT },
-  { name: "snake", cx: 595 / ORIGINAL_WIDTH, cy: 575 / ORIGINAL_HEIGHT, w: 40 / ORIGINAL_WIDTH, h: 160 / ORIGINAL_HEIGHT },
-  { name: "ring", cx: 359 / ORIGINAL_WIDTH, cy: 40 / ORIGINAL_HEIGHT, w: 38 / ORIGINAL_WIDTH, h: 57 / ORIGINAL_HEIGHT },
-  { name: "paintbrush", cx: 298 / ORIGINAL_WIDTH, cy: 718 / ORIGINAL_HEIGHT, w: 60 / ORIGINAL_WIDTH, h: 84 / ORIGINAL_HEIGHT }
+  { name: "slice of pizza", cx: 536 / ORIGINAL_WIDTH, cy: 815 / ORIGINAL_HEIGHT, w: 120 / ORIGINAL_WIDTH, h: 45 / ORIGINAL_HEIGHT },
+  { name: "radish", cx: 89 / ORIGINAL_WIDTH, cy: 320 / ORIGINAL_HEIGHT, w: 45 / ORIGINAL_WIDTH, h: 62 / ORIGINAL_HEIGHT },
+  { name: "mitten", cx: 200 / ORIGINAL_WIDTH, cy: 820 / ORIGINAL_HEIGHT, w: 108 / ORIGINAL_WIDTH, h: 96 / ORIGINAL_HEIGHT },
+  { name: "musical note", cx: 242 / ORIGINAL_WIDTH, cy: 465 / ORIGINAL_HEIGHT, w: 60 / ORIGINAL_WIDTH, h: 65 / ORIGINAL_HEIGHT },
+  { name: "slice of bread", cx: 562 / ORIGINAL_WIDTH, cy: 730 / ORIGINAL_HEIGHT, w: 67 / ORIGINAL_WIDTH, h: 59 / ORIGINAL_HEIGHT },
+  { name: "ice-cream cone", cx: 94 / ORIGINAL_WIDTH, cy: 718 / ORIGINAL_HEIGHT, w: 74 / ORIGINAL_WIDTH, h: 135 / ORIGINAL_HEIGHT },
+  { name: "flag", cx: 600 / ORIGINAL_WIDTH, cy: 270 / ORIGINAL_HEIGHT, w: 100 / ORIGINAL_WIDTH, h: 262 / ORIGINAL_HEIGHT },
+  { name: "doughnut", cx: 284 / ORIGINAL_WIDTH, cy: 592 / ORIGINAL_HEIGHT, w: 61 / ORIGINAL_WIDTH, h: 46 / ORIGINAL_HEIGHT },
+  { name: "cracker", cx: 117 / ORIGINAL_WIDTH, cy: 151 / ORIGINAL_HEIGHT, w: 45 / ORIGINAL_WIDTH, h: 48 / ORIGINAL_HEIGHT },
+  { name: "book", cx: 59 / ORIGINAL_WIDTH, cy: 475 / ORIGINAL_HEIGHT, w: 79 / ORIGINAL_WIDTH, h: 40 / ORIGINAL_HEIGHT },
+  { name: "watermelon", cx: 463 / ORIGINAL_WIDTH, cy: 458 / ORIGINAL_HEIGHT, w: 67 / ORIGINAL_WIDTH, h: 77 / ORIGINAL_HEIGHT },
+  { name: "butterfly", cx: 459 / ORIGINAL_WIDTH, cy: 172 / ORIGINAL_HEIGHT, w: 80 / ORIGINAL_WIDTH, h: 57 / ORIGINAL_HEIGHT },
+  { name: "snake", cx: 600 / ORIGINAL_WIDTH, cy: 608 / ORIGINAL_HEIGHT, w: 40 / ORIGINAL_WIDTH, h: 163 / ORIGINAL_HEIGHT },
+  { name: "ring", cx: 359 / ORIGINAL_WIDTH, cy: 43 / ORIGINAL_HEIGHT, w: 38 / ORIGINAL_WIDTH, h: 57 / ORIGINAL_HEIGHT },
+  { name: "paintbrush", cx: 298 / ORIGINAL_WIDTH, cy: 760 / ORIGINAL_HEIGHT, w: 60 / ORIGINAL_WIDTH, h: 87 / ORIGINAL_HEIGHT }
 ];
 
 const objectsToFind = centerHotspots.map(obj => ({
@@ -323,6 +323,7 @@ if (startButton) {
 } else {
   window.onload = startGame;
 }
+
 
 
 

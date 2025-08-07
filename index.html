@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Hidden Pictures Game</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="game-container">
+    <div class="header">
+	  <img src="Temp/Title_HP.png" alt="Title" class="header-title">
+	  <img src="Temp/MornRush.png" alt="Subtitle" class="header-subtitle">
+	  <div id="timer">⏱ 03:00</div>
+	</div>
+
+    <div class="content">
+      <div class="left-panel">
+        <img src="Temp/GameBg.png" alt="Puzzle" id="puzzle-image" />
+        <!-- Hidden hotspots will go here -->
+      </div>
+
+      <div class="right-panel">
+        <h2>Find These:</h2>
+        <div id="object-list" class="icon-list">
+          <!-- Dynamically filled from JS -->
+        </div>
+      </div>
+    </div>
+    
+    <div id="end-screen" class="hidden">
+      <h2 id="end-message"></h2>
+      <p>Your Score: <span id="score-value"></span></p>
+      <button onclick="location.reload()">Play Again</button>
+    </div>
+  </div>  
+
+  <script src="script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <audio id="bg-music" src="Temp/Music/CatchyPuzzleGame.mp3" loop></audio>
+</body>
+</html>

@@ -225,11 +225,15 @@ function revealColoredIcon(obj, hotspotEl) {
   img.style.left = obj.x + 'px';
   imageContainer.appendChild(img);
 
-  setTimeout(() => {
-    img.classList.add('reveal');
-    // Call the star burst effect
-    launchMagicEffect(obj.x + obj.w / 2, obj.y + obj.h / 2);
-  }, 200);
+    // This double requestAnimationFrame ensures the browser has rendered the initial
+  // invisible state before we ask it to animate to the final visible state.
+  // This guarantees the animation will play smoothly every time.
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      img.classList.add('reveal');
+      launchMagicEffect(obj.x + obj.w / 2, obj.y + obj.h / 2);
+    });
+  });
   
   setTimeout(() => {
     smoke.remove();

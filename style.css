@@ -30,25 +30,17 @@ body {
   margin: 0 auto 15px;
 }
 
-/* --- UPDATED TIMER STYLES --- */
 #timer {
-  font-size: 24px;
-  font-weight: bold;
-  background: #fff;
-  padding: 10px 15px;
-  border-radius: 8px;
-  border: 1px solid #ddd;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  /* Initially hidden */
-  visibility: hidden; 
+  position: absolute;
+  right: 0;
+  top: 0;
+  font-size: 14px;
 }
 
 .content {
   display: flex;
   gap: 20px;
   margin-top: 20px;
-  /* Vertically align items, including the timer */
-  align-items: center;
 }
 
 .left-panel {
@@ -61,58 +53,7 @@ body {
   width: 725px; /* match the base coordinates */
   height: auto;
   display: block;
-  transition: filter 0.3s ease; /* Smooth transition for blur */
 }
-
-/* --- NEW STYLES FOR OVERLAYS --- */
-.overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  color: black;
-}
-
-.overlay h2 {
-  font-size: 2.5em;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-  color: white;
-}
-
-.overlay p {
-  font-size: 1.2em;
-  font-weight: bold;
-}
-
-.overlay button {
-  font-size: 1.5em;
-  padding: 12px 25px;
-  cursor: pointer;
-  border-radius: 8px;
-  border: none;
-  background-color: #007bff;
-  color: white;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-  transition: transform 0.2s ease;
-}
-
-.overlay button:hover {
-    transform: scale(1.05);
-}
-
-.hidden {
-  display: none;
-}
-/* --- END NEW STYLES --- */
 
 .right-panel {
   flex: 1;
@@ -120,8 +61,6 @@ body {
   padding: 15px;
   border: 1px solid #ddd;
   height: fit-content;
-  /* Initially hidden */
-  visibility: hidden;
 }
 
 #object-list li {
@@ -148,6 +87,15 @@ body {
 }
 
 .hotspot.found {
+}
+
+#end-screen {
+  text-align: center;
+  margin-top: 30px;
+}
+
+.hidden {
+  display: none;
 }
 
 .draggable-icon {
@@ -181,16 +129,22 @@ body {
 }
 
 .answer-icon {
+  /* This is the starting state */
   position: absolute;
   opacity: 0;
   z-index: 5;
   pointer-events: none;
   transform: scale(0.5);
+  
+  /* NEW: Explicitly set the scaling origin point to prevent jumps */
   transform-origin: center;
+
+  /* NEW: Animate only opacity and transform for smooth performance */
   transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .answer-icon.reveal {
+  /* This is the final state (visible and sharp) */
   opacity: 1 !important;
   transform: scale(1) !important;
   z-index: 100 !important;
@@ -204,13 +158,36 @@ body {
 }
 
 .hotspot[data-name="flag"] {
+  /* Paste the polygon code you copied from the online tool here! */
   clip-path: polygon(0 0, 100% 0, 100% 100%, 90% 98%, 90% 20%, 0 16%);
+
+  /* We also need to remove the border-radius for this specific shape */
   border-radius: 0; 
 }
 
+#start-screen {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  text-align: center;
+}
+
+#start-button {
+  font-size: 1.5em;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
 .smoke-effect {
+  /* This is the key fix: it lifts the element out of the layout */
   position: absolute;
+
+  /* This prevents the transparent parts of the GIF from blocking mouse clicks */
   pointer-events: none;
+
+  /* This ensures it appears on top of the puzzle but below the final answer icon */
   z-index: 20;
 }
 
@@ -218,26 +195,34 @@ body {
 /* --- Mobile Responsive Styles --- */
 @media (max-width: 768px) {
   .content {
+    /* Stack the puzzle and the icon list vertically */
     flex-direction: column;
   }
-  
-  #timer {
-    /* Place the timer between the image and the icon list on mobile */
-    order: 2;
+
+  .game-container {
+    padding: 10px;
   }
 
-  .left-panel {
-      order: 1;
+  #puzzle-image {
+    /* Make the puzzle image fit the screen width */
+    width: 100%;
   }
 
   .right-panel {
-    order: 3;
+    /* Allow the icon list to take up the full width */
     width: auto;
+    
+    /* NEW: Set a maximum height for the panel */
     max-height: 180px; 
+    
+    /* NEW: Add a scrollbar if the content overflows */
     overflow-y: scroll; 
+    
+    /* Optional: Slightly reduce padding for a better fit */
     padding: 10px;
   }
   
+  /* NEW: Add this new rule to make the icons smaller */
   .draggable-icon {
     width: 45px;
     height: 45px;
@@ -251,3 +236,10 @@ body {
     max-width: 150px;
   }
 }
+
+
+
+
+
+
+

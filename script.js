@@ -51,22 +51,20 @@ function startGame() {
   const list = document.getElementById('object-list');
   const imageContainer = document.querySelector('.left-panel');
 
-  // Create Hotspots first and store them for easy access
-  const hotspots = {};
+  // Create Hotspots
   objectsToFind.forEach(obj => {
     const hotspot = document.createElement('div');
     hotspot.classList.add('hotspot');
-    hotspot.style.top = obj.y + 'px';
-    hotspot.style.left = obj.x + 'px';
-    hotspot.style.width = obj.w + 'px';
-    hotspot.style.height = obj.h + 'px';
+    hotspot.style.top = `${obj.y}px`;
+    hotspot.style.left = `${obj.x}px`;
+    hotspot.style.width = `${obj.w}px`;
+    hotspot.style.height = `${obj.h}px`;
     hotspot.dataset.name = obj.name;
     imageContainer.appendChild(hotspot);
-    hotspots[obj.name] = hotspot;
   });
 
-  // Create Draggable Icons and add custom mouse events
-  objectsToFind.forEach((obj, i) => {
+  // Create Draggable Icons
+  objectsToFind.forEach((obj) => {
     const iconFile = iconMap[obj.name] || obj.name;
     const img = document.createElement('img');
     img.src = `Temp/${iconFile}.png`;
@@ -75,80 +73,113 @@ function startGame() {
     img.dataset.name = obj.name;
     list.appendChild(img);
 
-    // --- CUSTOM DRAG-AND-DROP LOGIC ---
+    // --- MOUSE DRAG LOGIC ---
     img.addEventListener('mousedown', (e) => {
-      e.preventDefault(); // Prevent default image drag behavior
-
+      e.preventDefault();
       const originalIcon = e.target;
       if (originalIcon.classList.contains('found')) return;
 
-      // Create a clone to drag
+      const offsetX = e.offsetX;
+      const offsetY = e.offsetY;
       const clone = originalIcon.cloneNode(true);
       clone.classList.add('dragging');
       document.body.appendChild(clone);
-      clone.style.left = `${e.clientX - 25}px`;
-      clone.style.top = `${e.clientY - 25}px`;
+      clone.style.left = `${e.clientX - offsetX}px`;
+      clone.style.top = `${e.clientY - offsetY}px`;
+      originalIcon.style.opacity = '0.3';
 
-      originalIcon.style.opacity = '0.3'; // Dim original icon
-
-      function onMouseMove(moveEvent) {
-        clone.style.left = `${moveEvent.clientX - 25}px`;
-        clone.style.top = `${moveEvent.clientY - 25}px`;
+      function mouseMove(moveEvent) {
+        clone.style.left = `${moveEvent.clientX - offsetX}px`;
+        clone.style.top = `${moveEvent.clientY - offsetY}px`;
       }
 
-      function onMouseUp(upEvent) {
-        document.removeEventListener('mousemove', onMouseMove);
-        document.removeEventListener('mouseup', onMouseUp);
-
-        clone.remove(); // Remove the clone from the page
-
-        // Hide the clone to check what's underneath
+      function mouseUp(upEvent) {
+        document.removeEventListener('mousemove', mouseMove);
+        document.removeEventListener('mouseup', mouseUp);
         clone.style.display = 'none';
         const elementUnder = document.elementFromPoint(upEvent.clientX, upEvent.clientY);
-        clone.style.display = '';
+        clone.remove();
 
         if (elementUnder && elementUnder.classList.contains('hotspot') && elementUnder.dataset.name === originalIcon.dataset.name) {
-          // SUCCESSFUL DROP
-          const hotspot = elementUnder;
-          hotspot.classList.add('found');
-          originalIcon.classList.add('found'); // Mark original as found
+          elementUnder.classList.add('found');
+          originalIcon.classList.add('found');
           originalIcon.style.pointerEvents = "none";
           score++;
-          revealColoredIcon(obj, hotspot);
+          revealColoredIcon(obj, elementUnder);
           checkWin();
         } else {
-          // Failed drop, return original icon to normal
           originalIcon.style.opacity = '1';
         }
       }
 
-      document.addEventListener('mousemove', onMouseMove);
-      document.addEventListener('mouseup', onMouseUp);
+      document.addEventListener('mousemove', mouseMove);
+      document.addEventListener('mouseup', mouseUp);
+    });
+
+    // --- TOUCH DRAG LOGIC ---
+    img.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      const originalIcon = e.target;
+      if (originalIcon.classList.contains('found')) return;
+
+      const touch = e.touches[0];
+      const rect = originalIcon.getBoundingClientRect();
+      const offsetX = touch.clientX - rect.left;
+      const offsetY = touch.clientY - rect.top;
+      const clone = originalIcon.cloneNode(true);
+      clone.classList.add('dragging');
+      document.body.appendChild(clone);
+      clone.style.left = `${touch.clientX - offsetX}px`;
+      clone.style.top = `${touch.clientY - offsetY}px`;
+      originalIcon.style.opacity = '0.3';
+
+      function touchMove(moveEvent) {
+        const moveTouch = moveEvent.touches[0];
+        clone.style.left = `${moveTouch.clientX - offsetX}px`;
+        clone.style.top = `${moveTouch.clientY - offsetY}px`;
+      }
+
+      function touchEnd(endEvent) {
+        document.removeEventListener('touchmove', touchMove);
+        document.removeEventListener('touchend', touchEnd);
+        clone.style.display = 'none';
+        const endTouch = endEvent.changedTouches[0];
+        const elementUnder = document.elementFromPoint(endTouch.clientX, endTouch.clientY);
+        clone.remove();
+        
+        if (elementUnder && elementUnder.classList.contains('hotspot') && elementUnder.dataset.name === originalIcon.dataset.name) {
+          elementUnder.classList.add('found');
+          originalIcon.classList.add('found');
+          originalIcon.style.pointerEvents = "none";
+          score++;
+          revealColoredIcon(obj, elementUnder);
+          checkWin();
+        } else {
+          originalIcon.style.opacity = '1';
+        }
+      }
+      
+      document.addEventListener('touchmove', touchMove, { passive: false });
+      document.addEventListener('touchend', touchEnd);
     });
   });
 
   timer = setInterval(updateTimer, 1000);
 }
 
-
 function updateTimer() {
   const minutes = Math.floor(timeLeft / 60).toString().padStart(2, '0');
   const seconds = (timeLeft % 60).toString().padStart(2, '0');
   document.getElementById('timer').textContent = `⏱️ ${minutes}:${seconds}`;
   timeLeft--;
-
-  if (timeLeft <= 0) {
-    endGame();
-  }
+  if (timeLeft <= 0) endGame();
 }
 
 function endGame() {
   clearInterval(timer);
   document.getElementById('end-screen').classList.remove('hidden');
   document.getElementById('score-value').textContent = score;
-
   let message = '';
-
   if (score === 15) {
     message = "🎉 Kola Mass Sarae!";
     launchConfetti();
@@ -157,78 +188,86 @@ function endGame() {
   } else {
     message = "👎 Better Luck Next Time";
   }
-
   document.getElementById('end-message').textContent = message;
 }
 
 function checkWin() {
-  if (score === objectsToFind.length) {
-    endGame();
-  }
+  if (score === objectsToFind.length) endGame();
 }
-
-window.onload = startGame;
 
 function launchConfetti() {
   const duration = 2 * 1000;
   const end = Date.now() + duration;
-
   (function frame() {
     confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0, y: 1 } });
     confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1, y: 1 } });
-    if (Date.now() < end) { requestAnimationFrame(frame); }
+    if (Date.now() < end) requestAnimationFrame(frame);
   })();
 }
 
 function revealColoredIcon(obj, hotspotEl) {
+  const imageContainer = document.querySelector('.left-panel');
+  const smoke = document.createElement('div');
+  smoke.classList.add('smoke-effect');
+  smoke.style.backgroundImage = 'url(Temp/smoke-effect.gif)';
+  const smokeSize = 150;
+  smoke.style.left = (obj.x + obj.w / 2 - smokeSize / 2) + 'px';
+  smoke.style.top = (obj.y + obj.h / 2 - smokeSize / 2) + 'px';
+  imageContainer.appendChild(smoke);
+
   const iconFile = iconMap[obj.name] || obj.name;
-  const imagePath = `Temp/Ans/${iconFile}C.png`;
   const img = document.createElement('img');
-
-  // Handle load error
-  img.onerror = function () {
-    console.error("❌ IMAGE FAILED TO LOAD:", imagePath);
-  };
-
-  img.src = imagePath;
+  img.src = `Temp/Ans/${iconFile}C.png`;
   img.classList.add('answer-icon');
   img.style.width = obj.w + 'px';
   img.style.height = obj.h + 'px';
   img.style.top = obj.y + 'px';
   img.style.left = obj.x + 'px';
-  img.style.position = 'absolute';
-
-  const imageContainer = document.querySelector('.left-panel');
   imageContainer.appendChild(img);
 
-  console.log("✅ Added blurred hidden icon:", imagePath);
-
-  // 🧠 Force layout so browser applies initial blur state before reveal
-  void img.offsetWidth; // Trigger reflow (this ensures the animation works)
-
-  // 🌟 Add .reveal to trigger animation instantly
-  img.classList.add('reveal');
-  console.log("🎉 Reveal animation triggered.");
-
-  // 🎆 Launch magic visual effect at center of icon
-  launchMagicEffect(obj.x + obj.w / 2, obj.y + obj.h / 2);
+  setTimeout(() => {
+    img.classList.add('reveal');
+    // Call the star burst effect
+    launchMagicEffect(obj.x + obj.w / 2, obj.y + obj.h / 2);
+  }, 200);
+  
+  setTimeout(() => {
+    smoke.remove();
+  }, 1000);
 }
 
 function launchMagicEffect(x, y) {
-  // Convert the puzzle's pixel coordinates to the screen's percentage-based coordinates
   const puzzleRect = document.getElementById('puzzle-image').getBoundingClientRect();
   const originX = (puzzleRect.left + x) / window.innerWidth;
   const originY = (puzzleRect.top + y) / window.innerHeight;
 
-  // Configure the "magic puff" effect
   confetti({
-    particleCount: 50,
-    spread: 80,
-    gravity: 0.5, // Makes the particles float up slightly
+    particleCount: 30,
+    spread: 60,
+    startVelocity: 25,
+    scalar: 0.7,
+    gravity: 0.3,
     origin: { x: originX, y: originY },
-    shapes: ['star'], // Use star shapes instead of squares
-    colors: ['#ffd700', '#ffeca0', '#ffffff', '#fff4a3'] // Gold, yellow, and white colors
+    shapes: ['star'],
+    colors: ['#ffd700', '#ffeca0', '#ffffff', '#fff4a3']
   });
-
 }
 
+// --- Logic to start the game ---
+const startButton = document.getElementById('start-button');
+const startScreen = document.getElementById('start-screen');
+const gameContainer = document.querySelector('.game-container');
+const backgroundMusic = document.getElementById('bg-music');
+
+if (startButton) {
+  startButton.addEventListener('click', () => {
+    startScreen.classList.add('hidden');
+    gameContainer.classList.remove('hidden');
+    if (backgroundMusic) {
+      backgroundMusic.play().catch(error => console.error("Music playback failed:", error));
+    }
+    startGame();
+  });
+} else {
+  window.onload = startGame;
+}

@@ -180,6 +180,18 @@ body {
   cursor: pointer;
 }
 
+.smoke-effect {
+  /* This is the key fix: it lifts the element out of the layout */
+  position: absolute;
+
+  /* This prevents the transparent parts of the GIF from blocking mouse clicks */
+  pointer-events: none;
+
+  /* This ensures it appears on top of the puzzle but below the final answer icon */
+  z-index: 20;
+}
+
+
 /* --- Mobile Responsive Styles --- */
 @media (max-width: 768px) {
   .content {
@@ -224,6 +236,7 @@ body {
     max-width: 150px;
   }
 }
+
 
 
 

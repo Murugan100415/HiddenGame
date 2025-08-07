@@ -118,7 +118,7 @@ function startGame() {
           originalIcon.classList.add('found');
           originalIcon.style.pointerEvents = "none";
           score++;
-          revealColoredIcon(obj, elementUnder);
+          revealColoredIcon(originalIcon.dataset.name);
           checkWin();
         } else {
           originalIcon.style.opacity = '1';
@@ -131,52 +131,58 @@ function startGame() {
 
     // --- TOUCH DRAG LOGIC ---
     img.addEventListener('touchstart', (e) => {
-      e.preventDefault();
-      const originalIcon = e.target;
-      if (originalIcon.classList.contains('found')) return;
+	  // e.preventDefault(); // Let's remove this for now, it can interfere with scrolling sometimes.
+	  const originalIcon = e.target;
+	  if (originalIcon.classList.contains('found')) return;
 
-      const touch = e.touches[0];
-      const rect = originalIcon.getBoundingClientRect();
-      const offsetX = touch.clientX - rect.left;
-      const offsetY = touch.clientY - rect.top;
-      const clone = originalIcon.cloneNode(true);
-      clone.classList.add('dragging');
-      document.body.appendChild(clone);
-      clone.style.left = `${touch.clientX - offsetX}px`;
-      clone.style.top = `${touch.clientY - offsetY}px`;
-      originalIcon.style.opacity = '0.3';
+	  const touch = e.touches[0];
+	  const clone = originalIcon.cloneNode(true);
 
-      function touchMove(moveEvent) {
-        const moveTouch = moveEvent.touches[0];
-        clone.style.left = `${moveTouch.clientX - offsetX}px`;
-        clone.style.top = `${moveTouch.clientY - offsetY}px`;
-      }
+	  // Calculate the offset from the touch point to the top-left of the icon
+	  const rect = originalIcon.getBoundingClientRect();
+	  const offsetX = touch.pageX - (rect.left + window.scrollX);
+	  const offsetY = touch.pageY - (rect.top + window.scrollY);
 
-      function touchEnd(endEvent) {
-        document.removeEventListener('touchmove', touchMove);
-        document.removeEventListener('touchend', touchEnd);
-        
-        // Use pointer-events to reliably check what's under the finger
-        clone.style.pointerEvents = 'none';
-        const endTouch = endEvent.changedTouches[0];
-        const elementUnder = document.elementFromPoint(endTouch.clientX, endTouch.clientY);
-        clone.remove();
-        
-        if (elementUnder && elementUnder.classList.contains('hotspot') && elementUnder.dataset.name === originalIcon.dataset.name) {
-          elementUnder.classList.add('found');
-          originalIcon.classList.add('found');
-          originalIcon.style.pointerEvents = "none";
-          score++;
-          revealColoredIcon(obj, elementUnder);
-          checkWin();
-        } else {
-          originalIcon.style.opacity = '1';
-        }
-      }
-      
-      document.addEventListener('touchmove', touchMove, { passive: false });
-      document.addEventListener('touchend', touchEnd);
-    });
+	  clone.classList.add('dragging');
+	  document.body.appendChild(clone);
+
+	  // Position the clone using pageX/pageY
+	  clone.style.left = `${touch.pageX - offsetX}px`;
+	  clone.style.top = `${touch.pageY - offsetY}px`;
+	  originalIcon.style.opacity = '0.3';
+
+	  function touchMove(moveEvent) {
+		moveEvent.preventDefault(); // Prevent page scroll only WHILE dragging
+		const moveTouch = moveEvent.touches[0];
+		clone.style.left = `${moveTouch.pageX - offsetX}px`;
+		clone.style.top = `${moveTouch.pageY - offsetY}px`;
+	  }
+
+	  function touchEnd(endEvent) {
+		document.removeEventListener('touchmove', touchMove);
+		document.removeEventListener('touchend', touchEnd);
+
+		clone.style.pointerEvents = 'none';
+		const endTouch = endEvent.changedTouches[0];
+		const elementUnder = document.elementFromPoint(endTouch.clientX, endTouch.clientY);
+		clone.remove();
+
+		if (elementUnder && elementUnder.classList.contains('hotspot') && elementUnder.dataset.name === originalIcon.dataset.name) {
+		  elementUnder.classList.add('found');
+		  originalIcon.classList.add('found');
+		  originalIcon.style.pointerEvents = "none";
+		  score++;
+		  // Pass the NAME of the object to the reveal function
+		  revealColoredIcon(originalIcon.dataset.name);
+		  checkWin();
+		} else {
+		  originalIcon.style.opacity = '1';
+		}
+	  }
+
+	  document.addEventListener('touchmove', touchMove, { passive: false });
+	  document.addEventListener('touchend', touchEnd);
+	});
   });
 
   timer = setInterval(updateTimer, 1000);
@@ -220,42 +226,72 @@ function launchConfetti() {
   })();
 }
 
-function revealColoredIcon(obj, hotspotEl) {
+function revealColoredIcon(objectName) {
+  // Find the object's data using its name
+  const obj = objectsToFind.find(o => o.name === objectName);
+  if (!obj) return;
+
   const imageContainer = document.querySelector('.left-panel');
+  const puzzleImage = document.getElementById('puzzle-image');
+
+  // Get the puzzle image's current size and position
+  const puzzleRect = puzzleImage.getBoundingClientRect();
+  const currentWidth = puzzleRect.width;
+  const currentHeight = puzzleRect.height;
+
+  // --- Calculate all positions in PIXELS ---
+  const imgWidth = obj.w * currentWidth;
+  const imgHeight = obj.h * currentHeight;
+  const imgLeft = obj.x * currentWidth;
+  const imgTop = obj.y * currentHeight;
+
+  const smokeSize = 150;
+  const smokeX = imgLeft + (imgWidth / 2) - (smokeSize / 2);
+  const smokeY = imgTop + (imgHeight / 2) - (smokeSize / 2);
+
   const smoke = document.createElement('div');
   smoke.classList.add('smoke-effect');
   smoke.style.backgroundImage = 'url(Temp/smoke-effect.gif)';
-  const smokeSize = 150;
-  smoke.style.left = (obj.x + obj.w / 2 - smokeSize / 2) + 'px';
-  smoke.style.top = (obj.y + obj.h / 2 - smokeSize / 2) + 'px';
+  smoke.style.left = smokeX + 'px';
+  smoke.style.top = smokeY + 'px';
+  smoke.style.width = smokeSize + 'px';
+  smoke.style.height = smokeSize + 'px';
   imageContainer.appendChild(smoke);
 
   const iconFile = iconMap[obj.name] || obj.name;
   const img = document.createElement('img');
   img.src = `Temp/Ans/${iconFile}C.png`;
   img.classList.add('answer-icon');
-  img.style.width = obj.w + 'px';
-  img.style.height = obj.h + 'px';
-  img.style.top = obj.y + 'px';
-  img.style.left = obj.x + 'px';
+  img.style.width = imgWidth + 'px';
+  img.style.height = imgHeight + 'px';
+  img.style.top = imgTop + 'px';
+  img.style.left = imgLeft + 'px';
   imageContainer.appendChild(img);
 
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
       img.classList.add('reveal');
-      launchMagicEffect(obj.x + obj.w / 2, obj.y + obj.h / 2);
+      // Launch the effect at the center of the revealed icon
+      launchMagicEffect(imgLeft + imgWidth / 2, imgTop + imgHeight / 2);
     });
   });
-  
+
   setTimeout(() => {
     smoke.remove();
   }, 1000);
 }
 
 function launchMagicEffect(x, y) {
+  // x and y are now correct pixel coordinates relative to the puzzle image
   const puzzleRect = document.getElementById('puzzle-image').getBoundingClientRect();
-  const originX = (puzzleRect.left + x) / window.innerWidth;
-  const originY = (puzzleRect.top + y) / window.innerHeight;
+
+  // Calculate the origin point relative to the viewport
+  const absoluteX = puzzleRect.left + x;
+  const absoluteY = puzzleRect.top + y;
+
+  // Convert absolute pixel position to a 0-1 ratio for the confetti library
+  const originX = absoluteX / window.innerWidth;
+  const originY = absoluteY / window.innerHeight;
 
   confetti({
     particleCount: 30,

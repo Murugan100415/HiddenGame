@@ -148,7 +148,6 @@ body {
   opacity: 1 !important;
   transform: scale(1) !important;
   z-index: 100 !important;
-  filter: blur(0); /* End with no blur */
 }
 
 .icon-list {
@@ -225,6 +224,7 @@ body {
     max-width: 150px;
   }
 }
+
 
 
 

@@ -96,7 +96,9 @@ function startGame() {
       function mouseUp(upEvent) {
         document.removeEventListener('mousemove', mouseMove);
         document.removeEventListener('mouseup', mouseUp);
-        clone.style.display = 'none';
+        
+        // Use pointer-events to reliably check what's under the cursor
+        clone.style.pointerEvents = 'none';
         const elementUnder = document.elementFromPoint(upEvent.clientX, upEvent.clientY);
         clone.remove();
 
@@ -142,7 +144,9 @@ function startGame() {
       function touchEnd(endEvent) {
         document.removeEventListener('touchmove', touchMove);
         document.removeEventListener('touchend', touchEnd);
-        clone.style.display = 'none';
+        
+        // Use pointer-events to reliably check what's under the finger
+        clone.style.pointerEvents = 'none';
         const endTouch = endEvent.changedTouches[0];
         const elementUnder = document.elementFromPoint(endTouch.clientX, endTouch.clientY);
         clone.remove();
@@ -225,9 +229,6 @@ function revealColoredIcon(obj, hotspotEl) {
   img.style.left = obj.x + 'px';
   imageContainer.appendChild(img);
 
-    // This double requestAnimationFrame ensures the browser has rendered the initial
-  // invisible state before we ask it to animate to the final visible state.
-  // This guarantees the animation will play smoothly every time.
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
       img.classList.add('reveal');

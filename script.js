@@ -58,16 +58,6 @@ const timerDisplay = document.getElementById('timer');
 const rightPanel = document.querySelector('.right-panel');
 const backgroundMusic = document.getElementById('bg-music');
 
-// --- UPDATED initGame function ---
-function initGame() {
-    puzzleImage.style.filter = 'blur(5px)';
-    // Disable the button initially to prevent clicking during the transition
-    startButton.disabled = true;
-    // Re-enable the button after the blur transition is complete (300ms)
-    setTimeout(() => {
-        startButton.disabled = false;
-    }, 300);
-}
 
 function startGame() {
   const list = document.getElementById('object-list');
@@ -195,7 +185,7 @@ function endGame() {
   document.querySelectorAll('.answer-icon, .smoke-effect').forEach(el => el.remove());
 
   puzzleImage.style.filter = 'blur(5px)'; 
-  endScreenOverlay.classList.remove('hidden'); 
+  endScreenOverlay.classList.add('visible'); 
   document.getElementById('score-value').textContent = score;
   let message = '';
   if (score === 15) {
@@ -213,27 +203,28 @@ function checkWin() {
   if (score === objectsToFind.length) endGame();
 }
 
-// --- UPDATED launchConfetti function ---
+// --- UPDATED: launchConfetti function for fixed position ---
 function launchConfetti() {
-  const duration = 3 * 1000;
-  const animationEnd = Date.now() + duration;
-  const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+    var duration = 3 * 1000;
+    var animationEnd = Date.now() + duration;
+    var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 100 };
 
-  function randomInRange(min, max) {
-    return Math.random() * (max - min) + min;
-  }
-
-  const interval = setInterval(function() {
-    const timeLeft = animationEnd - Date.now();
-
-    if (timeLeft <= 0) {
-      return clearInterval(interval);
+    function randomInRange(min, max) {
+        return Math.random() * (max - min) + min;
     }
 
-    const particleCount = 50 * (timeLeft / duration);
-    confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
-    confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
-  }, 250);
+    var interval = setInterval(function() {
+        var timeLeft = animationEnd - Date.now();
+
+        if (timeLeft <= 0) {
+            return clearInterval(interval);
+        }
+
+        var particleCount = 50 * (timeLeft / duration);
+        // since particles fall down, start a bit higher than random
+        confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+        confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+    }, 250);
 }
 
 
@@ -297,10 +288,31 @@ function launchMagicEffect(x, y) {
   });
 }
 
-window.onload = initGame;
+// --- FINALIZED GAME START LOGIC ---
+document.addEventListener('DOMContentLoaded', () => {
+    // This function will set up the start screen once the image is ready
+    const setupStartScreen = () => {
+        puzzleImage.style.filter = 'blur(5px)';
+        startScreenOverlay.classList.add('visible');
+        startButton.disabled = false;
+    };
+
+    // Disable the button until the image is loaded and blurred
+    startButton.disabled = true;
+
+    // Check if the image is already loaded (e.g., from browser cache)
+    if (puzzleImage.complete) {
+        setupStartScreen();
+    } else {
+        // If not, wait for it to load before setting up the start screen
+        puzzleImage.addEventListener('load', setupStartScreen);
+    }
+});
+
 
 startButton.addEventListener('click', () => {
-  startScreenOverlay.classList.add('hidden');
+  startScreenOverlay.classList.remove('visible');
+  startScreenOverlay.classList.add('hidden'); // Use hidden to fully remove it
   puzzleImage.style.filter = 'none';
 
   timerDisplay.style.visibility = 'visible';

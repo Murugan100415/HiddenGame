@@ -13,7 +13,7 @@ body {
 .header {
   text-align: center;
   margin-bottom: 10px;
-  position: relative;
+  position: relative; /* This is important for positioning the timer */
 }
 
 .header-title {
@@ -30,22 +30,20 @@ body {
   margin: 0 auto 15px;
 }
 
-/* --- NEW: TIMER CONTAINER TO POSITION IT RIGHT --- */
-.timer-container {
-  display: flex;
-  justify-content: flex-end; /* Aligns the timer to the right */
-  margin-bottom: 15px; /* Adds space below the timer */
-}
+/* The .timer-container rule is no longer needed and has been deleted */
 
-/* --- UPDATED TIMER STYLES --- */
+/* --- FINAL TIMER STYLES (DESKTOP) --- */
 #timer {
-  font-size: 20px; /* Made smaller */
+  position: absolute;
+  bottom: 15px; /* Aligns with the bottom of the subtitle */
+  right: 0; /* Aligns to the far right of the header */
+  font-size: 14px; /* Made smaller */
   font-weight: bold;
   background: #fff;
-  padding: 8px 12px; /* Adjusted padding */
-  border-radius: 8px;
+  padding: 4px 8px; /* Reduced padding */
+  border-radius: 6px;
   border: 1px solid #ddd;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
   visibility: hidden; 
 }
 
@@ -53,7 +51,6 @@ body {
   display: flex;
   gap: 20px;
   margin-top: 20px;
-  /* align-items: center; Removed because timer is no longer inside */
 }
 
 .left-panel {
@@ -69,7 +66,6 @@ body {
   transition: filter 0.3s ease;
 }
 
-/* --- UPDATED OVERLAY STYLES --- */
 .overlay {
   position: absolute;
   top: 0;
@@ -85,7 +81,7 @@ body {
   align-items: center;
   text-align: center;
   color: black;
-  z-index: 50; /* NEW: Ensures overlay is on top of game elements */
+  z-index: 50;
 }
 
 .overlay h2 {
@@ -215,25 +211,23 @@ body {
   z-index: 20;
 }
 
-
 /* --- Mobile Responsive Styles --- */
 @media (max-width: 768px) {
   .content {
     flex-direction: column;
-    align-items: stretch; /* Let items fill the width */
+    align-items: stretch;
   }
   
   #puzzle-image {
     width: 100%;
   }
 
-  .timer-container {
-    /* Timer container will follow normal document flow */
-    margin-bottom: 10px;
-  }
-  
+  /* NEW: Timer position for mobile screens */
   #timer {
-    order: 2;
+    position: static; /* Remove absolute positioning */
+    display: block; /* Make it a block to fill width */
+    width: fit-content; /* Size to its content */
+    margin: 0 auto 10px; /* Center it and add space below */
   }
 
   .left-panel {

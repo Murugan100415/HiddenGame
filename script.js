@@ -50,7 +50,6 @@ let score = 0;
 let timeLeft = 180;
 let timer;
 
-// --- DOM ELEMENTS ---
 const puzzleImage = document.getElementById('puzzle-image');
 const startScreenOverlay = document.getElementById('start-screen-overlay');
 const endScreenOverlay = document.getElementById('end-screen-overlay');
@@ -60,7 +59,7 @@ const rightPanel = document.querySelector('.right-panel');
 const backgroundMusic = document.getElementById('bg-music');
 
 function initGame() {
-    puzzleImage.style.filter = 'blur(5px)'; // Start with the image blurred
+    puzzleImage.style.filter = 'blur(5px)';
 }
 
 function startGame() {
@@ -185,8 +184,12 @@ function updateTimer() {
 
 function endGame() {
   clearInterval(timer);
-  puzzleImage.style.filter = 'blur(5px)'; // Blur the image
-  endScreenOverlay.classList.remove('hidden'); // Show the end overlay
+  
+  // --- NEW: Remove all active answer icons and effects ---
+  document.querySelectorAll('.answer-icon, .smoke-effect').forEach(el => el.remove());
+
+  puzzleImage.style.filter = 'blur(5px)'; 
+  endScreenOverlay.classList.remove('hidden'); 
   document.getElementById('score-value').textContent = score;
   let message = '';
   if (score === 15) {
@@ -274,19 +277,15 @@ function launchMagicEffect(x, y) {
   });
 }
 
-// --- NEW GAME START LOGIC ---
 window.onload = initGame;
 
 startButton.addEventListener('click', () => {
-  // Hide start overlay and un-blur image
   startScreenOverlay.classList.add('hidden');
   puzzleImage.style.filter = 'none';
 
-  // Show game elements
   timerDisplay.style.visibility = 'visible';
   rightPanel.style.visibility = 'visible';
   
-  // Start music and game logic
   if (backgroundMusic) {
     backgroundMusic.play().catch(error => console.error("Music playback failed:", error));
   }

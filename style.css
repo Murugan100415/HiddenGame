@@ -30,11 +30,19 @@ body {
   margin: 0 auto 15px;
 }
 
+/* --- NEW: TIMER CONTAINER TO POSITION IT RIGHT --- */
+.timer-container {
+  display: flex;
+  justify-content: flex-end; /* Aligns the timer to the right */
+  margin-bottom: 15px; /* Adds space below the timer */
+}
+
+/* --- UPDATED TIMER STYLES --- */
 #timer {
-  font-size: 24px;
+  font-size: 20px; /* Made smaller */
   font-weight: bold;
   background: #fff;
-  padding: 10px 15px;
+  padding: 8px 12px; /* Adjusted padding */
   border-radius: 8px;
   border: 1px solid #ddd;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
@@ -45,7 +53,7 @@ body {
   display: flex;
   gap: 20px;
   margin-top: 20px;
-  align-items: center;
+  /* align-items: center; Removed because timer is no longer inside */
 }
 
 .left-panel {
@@ -55,12 +63,13 @@ body {
 }
 
 #puzzle-image {
-  width: 725px; /* match the base coordinates */
+  width: 725px; 
   height: auto;
   display: block;
-  transition: filter 0.3s ease; 
+  transition: filter 0.3s ease;
 }
 
+/* --- UPDATED OVERLAY STYLES --- */
 .overlay {
   position: absolute;
   top: 0;
@@ -76,6 +85,7 @@ body {
   align-items: center;
   text-align: center;
   color: black;
+  z-index: 50; /* NEW: Ensures overlay is on top of game elements */
 }
 
 .overlay h2 {
@@ -139,9 +149,6 @@ body {
   border: none;
   background-color: rgba(0, 0, 0, 0); 
   cursor: default;
-}
-
-.hotspot.found {
 }
 
 .draggable-icon {
@@ -213,13 +220,18 @@ body {
 @media (max-width: 768px) {
   .content {
     flex-direction: column;
+    align-items: stretch; /* Let items fill the width */
   }
   
-  /* THIS IS THE RESTORED RULE TO FIX IMAGE SIZING */
   #puzzle-image {
     width: 100%;
   }
 
+  .timer-container {
+    /* Timer container will follow normal document flow */
+    margin-bottom: 10px;
+  }
+  
   #timer {
     order: 2;
   }

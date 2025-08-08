@@ -23,7 +23,6 @@ body {
   margin: 0 auto 5px;
 }
 
-/* NEW: Flexbox container for subtitle and timer */
 .header-bottom-row {
   display: flex;
   justify-content: space-between;
@@ -32,16 +31,13 @@ body {
 }
 
 .header-subtitle {
-  /* Remove auto margins to work with flexbox */
   margin: 0;
   max-width: 200px;
   height: auto;
   display: block;
-  /* Push it left within the flex container */
   margin-right: auto;
 }
 
-/* FINAL TIMER STYLES - Simplified */
 #timer {
   font-size: 14px;
   font-weight: bold;
@@ -51,14 +47,13 @@ body {
   border: 1px solid #ddd;
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
   visibility: hidden;
-  /* It no longer needs position: absolute */
-  flex-shrink: 0; /* Prevents timer from shrinking */
+  flex-shrink: 0;
 }
 
 .content {
   display: flex;
   gap: 20px;
-  margin-top: 10px; /* Standard margin */
+  margin-top: 10px;
 }
 
 .left-panel {
@@ -90,7 +85,6 @@ body {
   text-align: center;
   color: black;
   z-index: 50;
-  /* Hide overlays initially to prevent seeing them before JS runs */
   visibility: hidden;
   opacity: 0;
   transition: visibility 0s, opacity 0.3s linear;
@@ -195,6 +189,7 @@ body {
   100% { transform: scale(1.3) rotate(5deg); }
 }
 
+/* --- OPTIMIZED ANIMATION STYLES --- */
 .answer-icon {
   position: absolute;
   opacity: 0;
@@ -202,14 +197,18 @@ body {
   pointer-events: none;
   transform: scale(0.5);
   transform-origin: center;
-  transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  /* NEW: Hint to the browser to prepare for animation */
+  will-change: transform, opacity;
+  /* UPDATED: Using a standard, smooth ease-out function */
+  transition: opacity 0.4s ease-out, transform 0.4s ease-out;
 }
 
 .answer-icon.reveal {
-  opacity: 1 !important;
-  transform: scale(1) !important;
-  z-index: 100 !important;
+  opacity: 1;
+  transform: scale(1);
+  z-index: 100;
 }
+/* --- END OPTIMIZED STYLES --- */
 
 .icon-list {
   display: flex;
@@ -242,13 +241,12 @@ body {
   }
 
   .header-bottom-row {
-    /* Allow items to wrap if screen is too narrow */
     flex-wrap: wrap;
-    justify-content: center; /* Center items when they wrap */
+    justify-content: center;
   }
 
   .header-subtitle {
-    margin-right: 0; /* Remove right margin for centering */
+    margin-right: 0; 
   }
 
   .left-panel {

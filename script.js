@@ -203,7 +203,6 @@ function checkWin() {
   if (score === objectsToFind.length) endGame();
 }
 
-// --- UPDATED: launchConfetti function for fixed position ---
 function launchConfetti() {
     var duration = 3 * 1000;
     var animationEnd = Date.now() + duration;
@@ -221,7 +220,6 @@ function launchConfetti() {
         }
 
         var particleCount = 50 * (timeLeft / duration);
-        // since particles fall down, start a bit higher than random
         confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
         confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
     }, 250);
@@ -262,7 +260,10 @@ function revealColoredIcon(objectName) {
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
       img.classList.add('reveal');
-      launchMagicEffect(imgLeft + imgWidth / 2, imgTop + imgHeight / 2);
+      // NEW: Delay the heavy confetti effect slightly
+      setTimeout(() => {
+        launchMagicEffect(imgLeft + imgWidth / 2, imgTop + imgHeight / 2);
+      }, 100);
     });
   });
   setTimeout(() => {
@@ -288,23 +289,17 @@ function launchMagicEffect(x, y) {
   });
 }
 
-// --- FINALIZED GAME START LOGIC ---
 document.addEventListener('DOMContentLoaded', () => {
-    // This function will set up the start screen once the image is ready
     const setupStartScreen = () => {
         puzzleImage.style.filter = 'blur(5px)';
         startScreenOverlay.classList.add('visible');
         startButton.disabled = false;
     };
-
-    // Disable the button until the image is loaded and blurred
     startButton.disabled = true;
 
-    // Check if the image is already loaded (e.g., from browser cache)
     if (puzzleImage.complete) {
         setupStartScreen();
     } else {
-        // If not, wait for it to load before setting up the start screen
         puzzleImage.addEventListener('load', setupStartScreen);
     }
 });
@@ -312,7 +307,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 startButton.addEventListener('click', () => {
   startScreenOverlay.classList.remove('visible');
-  startScreenOverlay.classList.add('hidden'); // Use hidden to fully remove it
+  startScreenOverlay.classList.add('hidden');
   puzzleImage.style.filter = 'none';
 
   timerDisplay.style.visibility = 'visible';

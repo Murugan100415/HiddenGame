@@ -185,8 +185,13 @@ function endGame() {
   document.querySelectorAll('.answer-icon, .smoke-effect').forEach(el => el.remove());
 
   puzzleImage.style.filter = 'blur(5px)'; 
-  endScreenOverlay.classList.add('visible'); 
+
+  // Remove .hidden so overlay can show
+  endScreenOverlay.classList.remove('hidden');
+  endScreenOverlay.classList.add('visible');
+
   document.getElementById('score-value').textContent = score;
+
   let message = '';
   if (score === 15) {
     message = "🎉 Kola Mass Sarae!";
@@ -318,3 +323,4 @@ startButton.addEventListener('click', () => {
   }
   startGame();
 });
+

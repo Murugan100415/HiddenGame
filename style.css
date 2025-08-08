@@ -23,33 +23,42 @@ body {
   margin: 0 auto 5px;
 }
 
+/* NEW: Flexbox container for subtitle and timer */
+.header-bottom-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+}
+
 .header-subtitle {
+  /* Remove auto margins to work with flexbox */
+  margin: 0;
   max-width: 200px;
   height: auto;
   display: block;
-  margin: 0 auto 15px;
+  /* Push it left within the flex container */
+  margin-right: auto;
 }
 
-/* --- FINAL TIMER STYLES --- */
+/* FINAL TIMER STYLES - Simplified */
 #timer {
-  position: absolute;
-  bottom: 15px; /* Aligns with the bottom of the subtitle */
-  right: 0; 
-  font-size: 14px; /* Made smaller */
+  font-size: 14px;
   font-weight: bold;
   background: #fff;
   padding: 4px 8px; 
   border-radius: 6px;
   border: 1px solid #ddd;
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-  visibility: hidden; 
+  visibility: hidden;
+  /* It no longer needs position: absolute */
+  flex-shrink: 0; /* Prevents timer from shrinking */
 }
 
 .content {
   display: flex;
   gap: 20px;
-  /* Reduced margin-top to use the space freed by the timer */
-  margin-top: 5px;
+  margin-top: 10px; /* Standard margin */
 }
 
 .left-panel {
@@ -81,7 +90,17 @@ body {
   text-align: center;
   color: black;
   z-index: 50;
+  /* Hide overlays initially to prevent seeing them before JS runs */
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s, opacity 0.3s linear;
 }
+
+.overlay.visible {
+    visibility: visible;
+    opacity: 1;
+}
+
 
 .overlay h2 {
   font-size: 2.5em;
@@ -222,10 +241,14 @@ body {
     width: 100%;
   }
 
-  /* Timer will use the absolute positioning from above, just need a small adjustment */
-  #timer {
-    right: 10px; /* Give it some space from the edge on mobile */
-    bottom: 10px;
+  .header-bottom-row {
+    /* Allow items to wrap if screen is too narrow */
+    flex-wrap: wrap;
+    justify-content: center; /* Center items when they wrap */
+  }
+
+  .header-subtitle {
+    margin-right: 0; /* Remove right margin for centering */
   }
 
   .left-panel {

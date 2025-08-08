@@ -58,8 +58,15 @@ const timerDisplay = document.getElementById('timer');
 const rightPanel = document.querySelector('.right-panel');
 const backgroundMusic = document.getElementById('bg-music');
 
+// --- UPDATED initGame function ---
 function initGame() {
     puzzleImage.style.filter = 'blur(5px)';
+    // Disable the button initially to prevent clicking during the transition
+    startButton.disabled = true;
+    // Re-enable the button after the blur transition is complete (300ms)
+    setTimeout(() => {
+        startButton.disabled = false;
+    }, 300);
 }
 
 function startGame() {
@@ -185,7 +192,6 @@ function updateTimer() {
 function endGame() {
   clearInterval(timer);
   
-  // --- NEW: Remove all active answer icons and effects ---
   document.querySelectorAll('.answer-icon, .smoke-effect').forEach(el => el.remove());
 
   puzzleImage.style.filter = 'blur(5px)'; 
@@ -207,15 +213,29 @@ function checkWin() {
   if (score === objectsToFind.length) endGame();
 }
 
+// --- UPDATED launchConfetti function ---
 function launchConfetti() {
-  const duration = 2 * 1000;
-  const end = Date.now() + duration;
-  (function frame() {
-    confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0, y: 1 } });
-    confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1, y: 1 } });
-    if (Date.now() < end) requestAnimationFrame(frame);
-  })();
+  const duration = 3 * 1000;
+  const animationEnd = Date.now() + duration;
+  const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+  function randomInRange(min, max) {
+    return Math.random() * (max - min) + min;
+  }
+
+  const interval = setInterval(function() {
+    const timeLeft = animationEnd - Date.now();
+
+    if (timeLeft <= 0) {
+      return clearInterval(interval);
+    }
+
+    const particleCount = 50 * (timeLeft / duration);
+    confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+    confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+  }, 250);
 }
+
 
 function revealColoredIcon(objectName) {
   const obj = objectsToFind.find(o => o.name === objectName);
